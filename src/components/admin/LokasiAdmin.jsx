@@ -3,16 +3,19 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 import { EllipsisVertical, Plus } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { BACKEND_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import useGetAllLokasi from '@/hooks/useGetAllLokasi'
+import { setLokasi } from '@/redux/lokasiSlice'
 
 const LokasiAdmin = () => {
-  // const fetchLokasi = useGetAllLokasi()
+  useGetAllLokasi()
+  const fetchLokasi = useGetAllLokasi()
   const {lokasi} = useSelector((store)=>store.lokasi)
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newLokasi, setNewLokasi] = useState('');
@@ -28,8 +31,8 @@ const LokasiAdmin = () => {
       });
       if (res.data.success) {
         toast.success(res.data.message);
-        useGetAllLokasi()
-        // await fetchLokasi(); // Refresh data kategori setelah penambahan
+        dispatch(setLokasi(res.data.lokasi))
+        await fetchLokasi(); // Refresh data kategori setelah penambahan
       }
     } catch (error) {
       console.log(error)
@@ -62,9 +65,8 @@ const LokasiAdmin = () => {
       if (res.data.success) {
         toast.success(res.data.message);
         setIsModalOpen(false);
-        setNewLokasi('');
-        useGetAllLokasi()
-      //  await fetchLokasi(); // Refresh data kategori setelah penambahan
+        dispatch(setLokasi(res.data.lokasi))
+       await fetchLokasi(); // Refresh data kategori setelah penambahan
       }
     } catch (error) {
       if (error.response && error.response.data.error) {

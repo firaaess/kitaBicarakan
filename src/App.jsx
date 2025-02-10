@@ -20,6 +20,7 @@ import DetailUser from './components/admin/DetailUser'
 import AddPengguna from './components/admin/AddPengguna'
 import KategoriAdmin from './components/admin/KategoriAdmin'
 import LokasiAdmin from './components/admin/LokasiAdmin'
+import GenerateLaporan from './components/admin/GenerateLaporan'
 
 const appRouter = createBrowserRouter([
   {
@@ -107,6 +108,10 @@ const appRouter = createBrowserRouter([
       {
         path: 'lokasi', // Halaman default untuk petugas
         element: <LokasiAdmin/>,
+      },
+      {
+        path: 'laporan', // Halaman default untuk petugas
+        element: <GenerateLaporan/>,
       },
     ],
   },

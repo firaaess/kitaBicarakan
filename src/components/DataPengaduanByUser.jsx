@@ -13,6 +13,7 @@ const DataPengaduanByUser = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  console.log(pengaduanUser)
   useGetPengaduanByUser();
 
   // Fungsi untuk membuka modal foto

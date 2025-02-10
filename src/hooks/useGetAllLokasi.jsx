@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux'
 const useGetAllLokasi = () => {
     const dispatch = useDispatch()
     const {lokasi} = useSelector((store)=>store.lokasi)
- useEffect(() => {
     const fetchAlllokasi = async () => {
         try {
             const res = await axios.get(`${BACKEND_API_END_POINT}/get/lokasi`, {withCredentials: true});
@@ -19,8 +18,7 @@ const useGetAllLokasi = () => {
             console.log(error)
         }
     }
-    fetchAlllokasi()
- }, [dispatch, lokasi])
+ return fetchAlllokasi
 }
 
 export default useGetAllLokasi

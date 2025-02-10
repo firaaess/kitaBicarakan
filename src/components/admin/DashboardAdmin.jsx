@@ -3,14 +3,16 @@ import { useSelector } from 'react-redux';
 import { MapPin, Newspaper, SquarePen, User2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useGetAllPengaduan from '@/hooks/useGetAllPengaduan';
+import useGetAllUser from '@/hooks/useGetAllUser';
 
 const DashboardAdmin = () => {
-  // useGetAllPengaduan()
+  useGetAllPengaduan()
+  useGetAllUser()
   const { kategori } = useSelector((store) => store.kategori);
   const { lokasi } = useSelector((store) => store.lokasi);
   const { pengaduan } = useSelector((store) => store.pengaduan);
   const { allUsers } = useSelector((store) => store.auth);
-
+console.log(allUsers)
   // State untuk paginasi
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
@@ -44,6 +46,38 @@ const DashboardAdmin = () => {
   const goToPageP = (page) => {
     if (page >= 1 && page <= totalPagesP) {
       setCurrentPageP(page);
+    }
+  };
+  const [currentPageK, setCurrentPageK] = useState(1);
+
+  // Hitung data yang akan ditampilkan pada halaman aktif
+  const startIndexK = (currentPageK - 1) * itemsPerPage;
+  const endIndexK = startIndexK + itemsPerPage;
+  const currentDataK = kategori.slice(startIndexK, endIndexK);
+
+  // Hitung jumlah halaman
+  const totalPagesK = Math.ceil(kategori.length / itemsPerPage);
+
+  // Fungsi untuk mengubah halaman
+  const goToPageK = (page) => {
+    if (page >= 1 && page <= totalPagesK) {
+      setCurrentPageK(page);
+    }
+  };
+  const [currentPageL, setCurrentPageL] = useState(1);
+
+  // Hitung data yang akan ditampilkan pada halaman aktif
+  const startIndexL = (currentPageL - 1) * itemsPerPage;
+  const endIndexL = startIndexL + itemsPerPage;
+  const currentDataL = lokasi.slice(startIndexL, endIndexL);
+
+  // Hitung jumlah halaman
+  const totalPagesL = Math.ceil(lokasi.length / itemsPerPage);
+
+  // Fungsi untuk mengubah halaman
+  const goToPageL = (page) => {
+    if (page >= 1 && page <= totalPagesL) {
+      setCurrentPageL(page);
     }
   };
 
@@ -216,7 +250,7 @@ const DashboardAdmin = () => {
     <div className="flex gap-4"> 
     <div className='w-full'>
         <h1 className="text-2xl font-bold">Data Kategori</h1>
-      {!kategori ? (
+      {!currentDataK ? (
         <p>Loading...</p>
       ) : (
         <table className="min-w-full border border-gray-300 bg-white rounded-lg my-3">
@@ -227,8 +261,8 @@ const DashboardAdmin = () => {
             </tr>
           </thead>
           <tbody>
-            {kategori.length > 0 ? (
-              kategori.map((item, index) => (
+            {currentDataK.length > 0 ? (
+              currentDataK.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm text-gray-700">{index + 1}</td>
                   <td className="px-6 py-4 text-sm text-gray-700">{item.nama}</td>
@@ -247,10 +281,40 @@ const DashboardAdmin = () => {
           </tbody>
         </table>
       )}
+        {/* Navigasi Halaman */}
+        <div className="flex justify-end items-center gap-2 mt-4">
+    <button
+        onClick={() => goToPageK(currentPageK - 1)}
+        disabled={currentPageK === 1}
+        className="px-2 py-1 text-sm bg-gray-300 rounded-md hover:bg-gray-400 disabled:bg-gray-200"
+    >
+        Previous
+    </button>
+    {Array.from({ length: totalPagesK }, (_, i) => (
+        <button
+        key={i}
+        onClick={() => goToPageK(i + 1)}
+        className={`px-2 py-1 text-sm rounded-md ${
+            currentPageK === i + 1
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-300 hover:bg-gray-400'
+        }`}
+        >
+        {i + 1}
+        </button>
+    ))}
+    <button
+        onClick={() => goToPageK(currentPageK + 1)}
+        disabled={currentPageK === totalPagesK}
+        className="px-2 py-1 text-sm bg-gray-300 rounded-md hover:bg-gray-400 disabled:bg-gray-200"
+    >
+        Next
+    </button>
+    </div>
     </div>
     <div className='w-full'>
       <h1 className="text-2xl font-bold">Data Lokasi</h1>
-    {!lokasi ? (
+    {!currentDataL ? (
       <p>Loading</p>
     ) : (
       <table className="min-w-full border border-gray-300 bg-white rounded-lg my-3">
@@ -261,8 +325,8 @@ const DashboardAdmin = () => {
           </tr>
         </thead>
         <tbody>
-          {lokasi.length > 0 ? (
-            lokasi.map((item, index) => (
+          {currentDataL.length > 0 ? (
+            currentDataL.map((item, index) => (
               <tr key={item.id} className="border-b hover:bg-gray-50">
                 <td className="px-6 py-4 text-sm text-gray-700">{index + 1}</td>
                 <td className="px-6 py-4 text-sm text-gray-700">{item.nama}</td>
@@ -274,14 +338,43 @@ const DashboardAdmin = () => {
                 colSpan="6"
                 className="px-6 py-4 text-center text-sm text-gray-500"
               >
-                Tidak ada data kategori
+                Tidak ada data lokasi
               </td>
             </tr>
           )}
         </tbody>
       </table>
     )}
-
+      {/* Navigasi Halaman */}
+      <div className="flex justify-end items-center gap-2 mt-4">
+    <button
+        onClick={() => goToPageL(currentPageL - 1)}
+        disabled={currentPageL === 1}
+        className="px-2 py-1 text-sm bg-gray-300 rounded-md hover:bg-gray-400 disabled:bg-gray-200"
+    >
+        Previous
+    </button>
+    {Array.from({ length: totalPagesL }, (_, i) => (
+        <button
+        key={i}
+        onClick={() => goToPageL(i + 1)}
+        className={`px-2 py-1 text-sm rounded-md ${
+            currentPageL === i + 1
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-300 hover:bg-gray-400'
+        }`}
+        >
+        {i + 1}
+        </button>
+    ))}
+    <button
+        onClick={() => goToPageL(currentPageL + 1)}
+        disabled={currentPageL === totalPagesL}
+        className="px-2 py-1 text-sm bg-gray-300 rounded-md hover:bg-gray-400 disabled:bg-gray-200"
+    >
+        Next
+    </button>
+    </div>
   </div>
     </div>
     </div>

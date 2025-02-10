@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { EllipsisVertical, Plus } from 'lucide-react'
@@ -9,13 +9,13 @@ import useGetAllUser from '@/hooks/useGetAllUser'
 import axios from 'axios'
 import { BACKEND_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
+import { Avatar, AvatarImage } from '../ui/avatar'
 
 const PenggunaAdmin = () => {
-  useGetAllUser()
+  useGetAllUser();
   const { allUsers } = useSelector((store) => store.auth)
   const navigate = useNavigate()
   const [filterRole, setFilterRole] = useState('') // State untuk filter role
-
   // Filter data berdasarkan role
   const filteredUsers = filterRole === "all" || !filterRole
   ? allUsers
@@ -84,7 +84,7 @@ const PenggunaAdmin = () => {
         <table className="min-w-full border border-gray-300 bg-white rounded-lg my-3">
           <thead>
             <tr className="bg-gray-100 border-b">
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">No</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Avatar</th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Nama</th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">No Telepon</th>
@@ -96,7 +96,10 @@ const PenggunaAdmin = () => {
             {filteredUsers.length > 0 ? (
               filteredUsers.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-700">{index + 1}</td>
+                  <td className="px-6 py-4 text-sm text-gray-700"> 
+                  <Avatar>
+                      <AvatarImage src={item.profile_picture} alt="@shadcn" className="object-cover rounded-full" />
+                  </Avatar></td>
                   <td className="px-6 py-4 text-sm text-gray-700">{item.nama}</td>
                   <td className="px-6 py-4 text-sm text-gray-700">{item.email}</td>
                   <td className="px-6 py-4 text-sm text-gray-700">{item.no_telepon}</td>

@@ -1,11 +1,14 @@
 import { setPengaduan } from '@/redux/pengaduanSlice';
 import { BACKEND_API_END_POINT } from '@/utils/constant';
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const useGetAllPengaduan = () => {
   const dispatch = useDispatch();
+  const pengaduan = useSelector((store) => store.pengaduan.pengaduan); 
+  const isFetched = useRef(false); // Gunakan ref untuk mencegah pemanggilan ulang
+
   useEffect(() => {
     const fetchPengaduan = async () => {
       try {
@@ -20,9 +23,9 @@ const useGetAllPengaduan = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // console.log(response)
+
         if (response.data.success) {
-          dispatch(setPengaduan(response.data.data));
+          dispatch(setPengaduan(response.data.data)); // Hanya update jika perlu
         } else {
           console.log('Tidak ada pengaduan ditemukan');
         }
@@ -38,9 +41,14 @@ const useGetAllPengaduan = () => {
       }
     };
 
-    fetchPengaduan();
-  }, [dispatch]); // Menambahkan dispatch dalam array dependensi
+    // Cegah pemanggilan ulang dengan useRef
+    if (!isFetched.current) {
+      fetchPengaduan();
+      isFetched.current = true; // Tandai sudah dipanggil
+    }
+  }, [dispatch]); 
 
+  return pengaduan;
 };
 
 export default useGetAllPengaduan;

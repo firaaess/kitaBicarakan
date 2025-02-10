@@ -13,6 +13,7 @@ import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import useGetAllLokasi from '@/hooks/useGetAllLokasi'
 import useGetAllKategori from '@/hooks/useGetAllKategori'
+import Footer from './Footer'
 
 const Pengaduan = () => {
   // useGetAllLokasi()
@@ -142,6 +143,7 @@ const Pengaduan = () => {
             }
         </form>
     </div>
+    <Footer/>
   </div>
   )
 }

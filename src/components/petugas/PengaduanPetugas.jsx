@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { setPengaduan } from '@/redux/pengaduanSlice';
 
 const PengaduanPetugas = () => {
-  useGetAllPengaduan();
+  const fetchPengaduan = useGetAllPengaduan()
   const { pengaduan } = useSelector((store) => store.pengaduan);
   const { user } = useSelector((store) => store.auth);
   const { kategori } = useSelector((store) => store.kategori);
@@ -48,7 +48,7 @@ const PengaduanPetugas = () => {
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
-      const token = localStorage.getItem('token'); // Token dari localStorage
+      const token = localStorage.getItem('token');
       const res = await axios.post(
         `${BACKEND_API_END_POINT}/status/pengaduan/${id}`,
         { status: newStatus },
@@ -58,23 +58,64 @@ const PengaduanPetugas = () => {
           },
         }
       );
-        
+  
       if (res.data.success) {
         toast.success(res.data.message);
+  
+        // Update Redux langsung tanpa fetch ulang
+        dispatch(setPengaduan(pengaduan.map(item => 
+          item.id === id ? { ...item, status: newStatus } : item
+        )));
       }
     } catch (error) {
       console.error('Gagal update status:', error);
       toast.error('Gagal memperbarui status!');
     }
   };
+  
+
+  const handleDeletePengaduan = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.delete(`${BACKEND_API_END_POINT}/delete/pengaduan/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+  
+      if (res.data.success) {
+        toast.success(res.data.message);
+  
+        // Hapus langsung di Redux state
+        dispatch(setPengaduan(pengaduan.filter(item => item.id !== id)));
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.data.error) {
+        const errors = error.response.data.error;
+        Object.keys(errors).forEach((key) => {
+          const errorMessages = errors[key];
+          if (Array.isArray(errorMessages)) {
+            errorMessages.forEach((msg) => toast.error(msg));
+          } else {
+            toast.error(errorMessages);
+          }
+        });
+      }
+    }
+  };
+  
   return (
     <div>
+      <div className="flex justify-between mb-2">
+        <div className='py-4'>
       <h1 className='text-2xl font-bold pb-4'>Data Pengaduan</h1>
+        </div>
 
-      {/* Filter Options */}
-      <div className="flex gap-4 mb-6">
-        {/* Filter by Category */}
-      <div className='flex flex-col gap-2'>
+   <div className='flex gap-3'>
+       {/* Filter Options */}
+       <div className='flex flex-col gap-2'>
       <Label>Berdasarkan kategori</Label>
         <select
           className="border rounded p-2"
@@ -102,6 +143,8 @@ const PengaduanPetugas = () => {
           ))}
         </select>
       </div>
+   </div>
+        {/* Filter by Category */}
 
         {/* <Button variant="default" onClick={handleFilter}>Terapkan Filter</Button> */}
       </div>
@@ -159,13 +202,6 @@ const PengaduanPetugas = () => {
                       >
                         Lihat Tanggapan
                       </Button>
-                       <Button
-                        variant="link"
-                        onClick={ () => handleUpdateStatus(item.id, 'selesai')}
-                        className="justify-start text-sm text-gray-700"
-                      >
-                        Selesai
-                      </Button>
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -196,6 +232,20 @@ const PengaduanPetugas = () => {
                         className="justify-start text-sm text-gray-700"
                       >
                         Lihat Tanggapan
+                      </Button>
+                      <Button
+                        variant="link"
+                        onClick={ () => handleUpdateStatus(item.id, 'selesai')}
+                        className="justify-start text-sm text-gray-700"
+                      >
+                        Selesai
+                      </Button>
+                      <Button
+                        variant="link"
+                        onClick={ () => handleDeletePengaduan(item.id)}
+                        className="justify-start text-sm text-gray-700"
+                      >
+                        Hapus
                       </Button>
                     </div>
                   </PopoverContent>

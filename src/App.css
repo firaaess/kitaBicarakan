@@ -117,3 +117,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Untuk seluruh halaman */
+::-webkit-scrollbar {
+  display: none;
+}
+
+html, body {
+  scrollbar-width: none; /* Untuk Firefox */
+  -ms-overflow-style: none; /* Untuk IE dan Edge */
+}
