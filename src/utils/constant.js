@@ -1,1 +1,1 @@
-export const BACKEND_API_END_POINT = 'http://127.0.0.1:8000/api'
+export const BACKEND_API_END_POINT = 'https://rest-api-kitabicarakan-production-8628.up.railway.app/api'
