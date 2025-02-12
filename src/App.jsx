@@ -116,7 +116,7 @@ const appRouter = createBrowserRouter([
     ],
   },
 ])
-const App = () => {
+function App () {
   return (
       <RouterProvider router={appRouter}/>
   )
