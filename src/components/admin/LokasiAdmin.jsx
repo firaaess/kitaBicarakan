@@ -12,7 +12,6 @@ import { setLokasi } from '@/redux/lokasiSlice'
 
 const LokasiAdmin = () => {
   useGetAllLokasi()
-  const fetchLokasi = useGetAllLokasi()
   const {lokasi} = useSelector((store)=>store.lokasi)
   // const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -32,7 +31,6 @@ const LokasiAdmin = () => {
       if (res.data.success) {
         toast.success(res.data.message);
         dispatch(setLokasi(res.data.lokasi))
-        await fetchLokasi(); // Refresh data kategori setelah penambahan
       }
     } catch (error) {
       console.log(error)
@@ -66,7 +64,6 @@ const LokasiAdmin = () => {
         toast.success(res.data.message);
         setIsModalOpen(false);
         dispatch(setLokasi(res.data.lokasi))
-       await fetchLokasi(); // Refresh data kategori setelah penambahan
       }
     } catch (error) {
       if (error.response && error.response.data.error) {

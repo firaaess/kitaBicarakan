@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import useGetAllKategori from '@/hooks/useGetAllKategori';
 
 const KategoriAdmin = () => {
-  const fetchKategori = useGetAllKategori(); // Inisialisasi fungsi fetch
+  useGetAllKategori(); // Inisialisasi fungsi fetch
   const { kategori } = useSelector((store) => store.kategori);
   const navigate = useNavigate();
 
@@ -28,7 +28,6 @@ const KategoriAdmin = () => {
       });
       if (res.data.success) {
         toast.success(res.data.message);
-        await fetchKategori(); // Refresh data kategori setelah penghapusan
       }
     } catch (error) {
       if (error.response && error.response.data.error) {
@@ -63,7 +62,6 @@ const KategoriAdmin = () => {
         toast.success(res.data.message);
         setIsModalOpen(false);
         setNewKategori('');
-        await fetchKategori(); // Refresh data kategori setelah penambahan
       }
     } catch (error) {
       if (error.response && error.response.data.error) {

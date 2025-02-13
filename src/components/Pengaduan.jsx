@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
 import { Link, useNavigate } from 'react-router-dom'
@@ -16,10 +16,8 @@ import useGetAllKategori from '@/hooks/useGetAllKategori'
 import Footer from './Footer'
 
 const Pengaduan = () => {
-useEffect(() => {
-  useGetAllLokasi()
-  useGetAllKategori()
-})
+  // useGetAllLokasi()
+  // useGetAllKategori()
   const {user} = useSelector(store=>store.auth)
   const {kategori }= useSelector(store=>store.kategori)
   const {lokasi }= useSelector(store=>store.lokasi)
