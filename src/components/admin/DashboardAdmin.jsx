@@ -4,10 +4,14 @@ import { MapPin, Newspaper, SquarePen, User2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useGetAllPengaduan from '@/hooks/useGetAllPengaduan';
 import useGetAllUser from '@/hooks/useGetAllUser';
+import useGetAllKategori from '@/hooks/useGetAllKategori';
+import useGetAllLokasi from '@/hooks/useGetAllLokasi';
 
 const DashboardAdmin = () => {
   useGetAllPengaduan()
   useGetAllUser()
+  useGetAllKategori()
+  useGetAllLokasi()
   const { kategori } = useSelector((store) => store.kategori);
   const { lokasi } = useSelector((store) => store.lokasi);
   const { pengaduan } = useSelector((store) => store.pengaduan);

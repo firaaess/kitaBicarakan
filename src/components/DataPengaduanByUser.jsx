@@ -6,16 +6,14 @@ import { Button } from './ui/button';
 import useGetPengaduanByUser from '@/hooks/useGetPengaduanByUser';
 
 const DataPengaduanByUser = () => {
+  useGetPengaduanByUser()
   const navigate = useNavigate(); // Inisialisasi useNavigate
   const { pengaduanUser } = useSelector(store => store.pengaduan);
   
   // State untuk mengatur modal gambar yang ditampilkan
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-
-  console.log(pengaduanUser)
-  useGetPengaduanByUser();
-
+  
   // Fungsi untuk membuka modal foto
   const handleViewImage = (foto) => {
     setSelectedImage(foto); // Set URL gambar yang dipilih

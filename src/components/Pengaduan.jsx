@@ -16,8 +16,8 @@ import useGetAllKategori from '@/hooks/useGetAllKategori'
 import Footer from './Footer'
 
 const Pengaduan = () => {
-  // useGetAllLokasi()
-  // useGetAllKategori()
+  useGetAllLokasi()
+  useGetAllKategori()
   const {user} = useSelector(store=>store.auth)
   const {kategori }= useSelector(store=>store.kategori)
   const {lokasi }= useSelector(store=>store.lokasi)

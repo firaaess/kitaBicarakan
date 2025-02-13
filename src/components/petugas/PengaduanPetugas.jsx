@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { setPengaduan } from '@/redux/pengaduanSlice';
 
 const PengaduanPetugas = () => {
-  const fetchPengaduan = useGetAllPengaduan()
+  useGetAllPengaduan()
   const { pengaduan } = useSelector((store) => store.pengaduan);
   const { user } = useSelector((store) => store.auth);
   const { kategori } = useSelector((store) => store.kategori);
