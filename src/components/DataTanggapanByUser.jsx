@@ -44,7 +44,6 @@ const DataTanggapanByUser = () => {
 
     fetchTanggapanById();
   }, [id]);
-  console.log(tanggapan)
   const handleOut = () => {
     console.log(user.role)
     if(user.role === 'masyarakat'){

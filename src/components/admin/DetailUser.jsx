@@ -33,7 +33,6 @@ const DetailUser = () => {
                     },
                   }
                 );
-                console.log(response.data.data)
                 if (response.data.success) {
                   dispatch(setUserById(response.data.data));
                 } else {
@@ -71,7 +70,6 @@ const DetailUser = () => {
           );
     
           if (response.data.success) {
-            console.log('Peran berhasil diperbarui:', response.data);
             // Perbarui data user di redux
             dispatch(setUserById(response.data.data));
           } else {

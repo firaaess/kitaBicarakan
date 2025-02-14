@@ -30,7 +30,6 @@ const PenggunaAdmin = () => {
         },
         withCredentials: true,
       })
-      console.log(res)
       if (res.data.success) {
         navigate('/admin/pengguna')
         toast.success(res.data.message)

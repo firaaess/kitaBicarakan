@@ -16,7 +16,6 @@ const DashboardAdmin = () => {
   const { lokasi } = useSelector((store) => store.lokasi);
   const { pengaduan } = useSelector((store) => store.pengaduan);
   const { allUsers } = useSelector((store) => store.auth);
-console.log(allUsers)
   // State untuk paginasi
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
@@ -88,44 +87,45 @@ console.log(allUsers)
   return (
     <div>
       <h1 className="text-2xl font-bold pb-4">Beranda</h1>
-      <div className="flex gap-4">
-        <div className="flex justify-between w-64 h-28 bg-gray-200 rounded-md">
-          <div className="bg-green-600 w-24 flex justify-center items-center rounded-s-md">
-          <Link to='/admin/pengguna'><User2 className="w-16 h-16 text-white" /></Link>
-          </div>
-          <div className="mx-auto text-center">
-            <h1 className="mt-2 font-medium">Pengguna</h1>
-            <h1 className="text-6xl font-medium">{allUsers.length}</h1>
-          </div>
-        </div>
-        <div className="flex justify-between w-64 h-28 bg-gray-200 rounded-md">
-          <div className="bg-blue-600 w-24 flex justify-center items-center rounded-s-md">
-          <Link to='/admin/kategori'><Newspaper className="w-16 h-16 text-white" /></Link>
-          </div>
-          <div className="mx-auto text-center">
-            <h1 className="mt-2 font-medium">Kategori</h1>
-            <h1 className="text-6xl font-medium">{kategori.length}</h1>
-          </div>
-        </div>
-        <div className="flex justify-between w-64 h-28 bg-gray-200 rounded-md">
-          <div className="bg-red-600 w-24 flex justify-center items-center rounded-s-md">
-          <Link to='/admin/lokasi'><MapPin className="w-16 h-16 text-white" /></Link>
-          </div>
-          <div className="mx-auto text-center">
-            <h1 className="mt-2 font-medium">Lokasi</h1>
-            <h1 className="text-6xl font-medium">{lokasi.length}</h1>
-          </div>
-        </div>
-        <div className="flex justify-between w-64 h-28 bg-gray-200 rounded-md">
-          <div className="bg-cyan-400 w-24 flex justify-center items-center rounded-s-md">
-            <Link to='/petugas/pengaduan'><SquarePen className="w-16 h-16 text-white" /></Link>
-          </div>
-          <div className="mx-auto text-center">
-            <h1 className="mt-2 font-medium">Pengaduan</h1>
-            <h1 className="text-6xl font-medium">{pengaduan.length}</h1>
-          </div>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <div className="flex justify-between h-28 bg-gray-200 rounded-md">
+    <div className="bg-green-600 w-24 flex justify-center items-center rounded-s-md">
+      <Link to='/admin/pengguna'><User2 className="w-16 h-16 text-white" /></Link>
+    </div>
+    <div className="mx-auto text-center">
+      <h1 className="mt-2 font-medium">Pengguna</h1>
+      <h1 className="text-6xl font-medium">{allUsers.length}</h1>
+    </div>
+  </div>
+  <div className="flex justify-between h-28 bg-gray-200 rounded-md">
+    <div className="bg-blue-600 w-24 flex justify-center items-center rounded-s-md">
+      <Link to='/admin/kategori'><Newspaper className="w-16 h-16 text-white" /></Link>
+    </div>
+    <div className="mx-auto text-center">
+      <h1 className="mt-2 font-medium">Kategori</h1>
+      <h1 className="text-6xl font-medium">{kategori.length}</h1>
+    </div>
+  </div>
+  <div className="flex justify-between h-28 bg-gray-200 rounded-md">
+    <div className="bg-red-600 w-24 flex justify-center items-center rounded-s-md">
+      <Link to='/admin/lokasi'><MapPin className="w-16 h-16 text-white" /></Link>
+    </div>
+    <div className="mx-auto text-center">
+      <h1 className="mt-2 font-medium">Lokasi</h1>
+      <h1 className="text-6xl font-medium">{lokasi.length}</h1>
+    </div>
+  </div>
+  <div className="flex justify-between h-28 bg-gray-200 rounded-md">
+    <div className="bg-cyan-400 w-24 flex justify-center items-center rounded-s-md">
+      <Link to='/petugas/pengaduan'><SquarePen className="w-16 h-16 text-white" /></Link>
+    </div>
+    <div className="mx-auto text-center">
+      <h1 className="mt-2 font-medium">Pengaduan</h1>
+      <h1 className="text-6xl font-medium">{pengaduan.length}</h1>
+    </div>
+  </div>
+</div>
+
 
       <h1 className="text-2xl font-bold py-4">Data Pengaduan</h1>
       <table className="min-w-full border border-gray-300 bg-white rounded-lg">

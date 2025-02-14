@@ -48,7 +48,6 @@ const Tanggapan = () => {
         navigate('/petugas/pengaduan')
         setTanggapan([])
     }
-    console.log(tanggapan)
   return (
     <div className="max-w-4xl mx-auto p-6">
       <Button variant='link' onClick={handleOut}>

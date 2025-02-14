@@ -31,7 +31,7 @@ const DataPengaduanByUser = () => {
       <Navbar />
       <div className="p-6">
         {/* Tombol Kembali */}
-        <Button onClick={() => navigate(-1)}>Kembali</Button>
+        <Button onClick={() => navigate('/')}>Kembali</Button>
 
         <h1 className="text-2xl font-bold mb-4">Data Pengaduan Saya</h1>
         {pengaduanUser.length === 0 ? (

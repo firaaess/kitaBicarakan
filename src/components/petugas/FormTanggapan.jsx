@@ -5,10 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import store from "@/redux/store";
-import { setLoading } from "@/redux/authSlice";
 import axios from "axios";
 import { BACKEND_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
@@ -18,6 +17,7 @@ const FormTanggapan = () => {
   const { user } = useSelector((store) => store.auth);
   const [tanggapan, setTanggapan] = useState(""); // Untuk tanggapan
   const [foto, setFoto] = useState(null); // Untuk foto (file)
+  const [loading, setLoading] = useState(false);
   const userId = user.id; // Simulasikan userId dari auth (gunakan auth logic aslinya)
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const FormTanggapan = () => {
     formData.append("pengaduanId", id);
 
     try {
-      dispatch(setLoading(true));
+      setLoading(true);
       const token = localStorage.getItem("token"); // Get token from localStorage
       const res = await axios.post(
         `${BACKEND_API_END_POINT}/add/${id}/tanggapan`,
@@ -83,7 +83,7 @@ const FormTanggapan = () => {
         toast.error("Terjadi kesalahan saat mengirim data.");
       }
     } finally {
-      dispatch(setLoading(false));
+      setLoading(false);
     }
   };
 
@@ -136,12 +136,11 @@ const FormTanggapan = () => {
 
         {/* Tombol Kirim */}
         <div className="mt-10">
-          <Button
-            type="submit"
-            className="w-full bg-black text-white hover:bg-gray-800"
-          >
-            Kirim
-          </Button>
+        {loading ? (
+            <Button className='w-full my-4'><Loader2 className='mr-2 h-4 w-4' />Tunggu sebentar...</Button>
+          ) : (
+            <Button type='submit' className='w-full my-4'>Kirim</Button>
+          )}
         </div>
       </form>
     </div>

@@ -202,6 +202,13 @@ const PengaduanPetugas = () => {
                       >
                         Lihat Tanggapan
                       </Button>
+                      <Button
+                        variant="link"
+                        onClick={ () => handleUpdateStatus(item.id, 'selesai')}
+                        className="justify-start text-sm text-gray-700"
+                      >
+                        Selesai
+                      </Button>
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -232,13 +239,6 @@ const PengaduanPetugas = () => {
                         className="justify-start text-sm text-gray-700"
                       >
                         Lihat Tanggapan
-                      </Button>
-                      <Button
-                        variant="link"
-                        onClick={ () => handleUpdateStatus(item.id, 'selesai')}
-                        className="justify-start text-sm text-gray-700"
-                      >
-                        Selesai
                       </Button>
                       <Button
                         variant="link"

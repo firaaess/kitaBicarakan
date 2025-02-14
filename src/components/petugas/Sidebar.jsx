@@ -91,7 +91,7 @@ const SideBar = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/admin/laporan" className={`block px-4 py-2 ${isActive("/admin/lokasi")}`}>
+                <Link to="/admin/laporan" className={`block px-4 py-2 ${isActive("/admin/laporan")}`}>
                   Generate Laporan
                 </Link>
               </li>

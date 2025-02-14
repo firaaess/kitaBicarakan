@@ -26,7 +26,7 @@ const Pengaturan = () => {
 
   // Fungsi kembali ke halaman sebelumnya
   const handleBack = () => {
-    navigate(-1);
+    navigate('/');
   };
 
   // Fungsi menangani perubahan input
