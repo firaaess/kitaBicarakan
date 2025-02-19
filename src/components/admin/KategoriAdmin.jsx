@@ -2,20 +2,35 @@ import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { EllipsisVertical, Plus } from 'lucide-react';
 import { Button } from '../ui/button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BACKEND_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import useGetAllKategori from '@/hooks/useGetAllKategori';
+import { setKategori } from '@/redux/kategoriSlice';
 
 const KategoriAdmin = () => {
   useGetAllKategori(); // Inisialisasi fungsi fetch
-  const { kategori } = useSelector((store) => store.kategori);
-  const navigate = useNavigate();
-
+  const { kategori = [] } = useSelector((store) => store.kategori);
+  const dispatch = useDispatch()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newKategori, setNewKategori] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+ // 🔍 Filter kategori berdasarkan search input
+ const filteredKategori = kategori?.filter((item) =>
+ item.nama.toLowerCase().includes(searchTerm.toLowerCase())
+) || [];
+
+ // 🛠️ Pagination
+ const totalItems = filteredKategori.length;
+ const totalPages = Math.ceil(totalItems / itemsPerPage);
+ const startIndex = (currentPage - 1) * itemsPerPage;
+ const paginatedKategori = filteredKategori.slice(startIndex, startIndex + itemsPerPage);
+
 
   const handleDeleteKategori = async (id) => {
     try {
@@ -28,6 +43,7 @@ const KategoriAdmin = () => {
       });
       if (res.data.success) {
         toast.success(res.data.message);
+        // dispatch(setKategori(res.data.kategori))
       }
     } catch (error) {
       if (error.response && error.response.data.error) {
@@ -84,10 +100,21 @@ const KategoriAdmin = () => {
     <div>
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Data Kategori</h1>
-        <Button onClick={() => setIsModalOpen(true)}>
+      <div className="flex gap-4">
+      {/* 🔍 Search Input */}
+      <input
+        type="text"
+        placeholder="Cari kategori..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+      />
+       <Button onClick={() => setIsModalOpen(true)}>
           <Plus /> Tambah Kategori
         </Button>
       </div>
+      </div>
+
       {!kategori ? (
         <p>Loading...</p>
       ) : (
@@ -100,8 +127,8 @@ const KategoriAdmin = () => {
             </tr>
           </thead>
           <tbody>
-            {kategori.length > 0 ? (
-              kategori.map((item, index) => (
+            {paginatedKategori.length > 0 ? (
+              paginatedKategori.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm text-gray-700">{index + 1}</td>
                   <td className="px-6 py-4 text-sm text-gray-700">{item.nama}</td>
@@ -139,6 +166,24 @@ const KategoriAdmin = () => {
         </table>
       )}
 
+       {/* Pagination Controls */}
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </Button>
+          <span className="text-gray-700">
+            Halaman {currentPage} dari {totalPages}
+          </span>
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
       {/* Modal for Add Kategori */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

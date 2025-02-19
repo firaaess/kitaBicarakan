@@ -16,10 +16,18 @@ const PenggunaAdmin = () => {
   const { allUsers } = useSelector((store) => store.auth)
   const navigate = useNavigate()
   const [filterRole, setFilterRole] = useState('') // State untuk filter role
-  // Filter data berdasarkan role
-  const filteredUsers = filterRole === "all" || !filterRole
-  ? allUsers
-  : allUsers.filter((user) => user.role === filterRole)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const usersPerPage = 10
+
+  const filteredUsers = allUsers.filter(user =>
+    (filterRole === 'all' || !filterRole || user.role === filterRole) &&
+    (user.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     user.email.toLowerCase().includes(searchTerm.toLowerCase()))
+  )
+
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage)
+  const displayedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
 
   const handleDeleteUser = async (id) => {
     try {
@@ -56,12 +64,16 @@ const PenggunaAdmin = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Data Pengguna</h1>
         <div className="flex items-center gap-4">
-          <Select
-            onValueChange={(value) => setFilterRole(value)}
-            value={filterRole}
-          >
+          <input
+            type="text"
+            placeholder="Cari nama atau email"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border p-2 rounded"
+          />
+          <Select onValueChange={setFilterRole} value={filterRole}>
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Filter Berdasarkan Role" />
+              <SelectValue placeholder="Filter Role" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value='all'>Semua</SelectItem>
@@ -77,7 +89,7 @@ const PenggunaAdmin = () => {
           </Link>
         </div>
       </div>
-      {!filteredUsers ? (
+      {!displayedUsers ? (
         <p>Loading</p>
       ) : (
         <table className="min-w-full border border-gray-300 bg-white rounded-lg my-3">
@@ -92,8 +104,8 @@ const PenggunaAdmin = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((item, index) => (
+            {displayedUsers.length > 0 ? (
+              displayedUsers.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm text-gray-700"> 
                   <Avatar>
@@ -143,6 +155,11 @@ const PenggunaAdmin = () => {
           </tbody>
         </table>
       )}
+         <div className="flex justify-center gap-2 my-4">
+         <Button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)}>Sebelumnya</Button>
+         <span>Halaman {currentPage} dari {totalPages}</span>
+         <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)}>Selanjutnya</Button>
+       </div>
     </div>
   )
 }

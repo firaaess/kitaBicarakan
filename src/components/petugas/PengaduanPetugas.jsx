@@ -24,8 +24,8 @@ const PengaduanPetugas = () => {
   const [filteredPengaduan, setFilteredPengaduan] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
-
-  console.log(pengaduan)
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
  
   // Set data awal untuk filteredPengaduan
   useEffect(() => {
@@ -37,14 +37,16 @@ const PengaduanPetugas = () => {
     const filtered = pengaduan.filter(item => {
       const matchesCategory = selectedCategory ? item.kategori_id === parseInt(selectedCategory) : true;
       const matchesLocation = selectedLocation ? item.lokasi_id === parseInt(selectedLocation) : true;
-      return matchesCategory && matchesLocation;
+      const matchesStatus = selectedStatus ? item.status === selectedStatus : true;
+      const matchesSearch = searchQuery ? item.judul.toLowerCase().includes(searchQuery.toLowerCase()) || item.isi_pengaduan.toLowerCase().includes(searchQuery.toLowerCase()) : true;
+      return matchesCategory && matchesLocation && matchesStatus && matchesSearch;
     });
     setFilteredPengaduan(filtered);
   };
 
   useEffect(() => {
     handleFilter();
-  }, [selectedCategory, selectedLocation]);
+  }, [selectedCategory, selectedLocation, searchQuery, selectedStatus]);
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
@@ -106,47 +108,62 @@ const PengaduanPetugas = () => {
     }
   };
   
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Hitung total halaman
+  const totalPages = Math.ceil(filteredPengaduan.length / itemsPerPage);
+
+  // Dapatkan data untuk halaman saat ini
+  const currentData = filteredPengaduan.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div>
-      <div className="flex justify-between mb-2">
-        <div className='py-4'>
       <h1 className='text-2xl font-bold pb-4'>Data Pengaduan</h1>
+      <div className='flex items-center justify-between gap-4 pb-3'>
+        {/* Input Search */}
+        <div className='flex flex-col gap-2 w-full'>
+          <Label>Pencarian</Label>
+          <input
+            type='text'
+            placeholder='Cari berdasarkan judul atau isi pengaduan...'
+            className='border rounded-lg p-2 w-full'
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
 
-   <div className='flex gap-3'>
-       {/* Filter Options */}
-       <div className='flex flex-col gap-2'>
-      <Label>Berdasarkan kategori</Label>
-        <select
-          className="border rounded p-2"
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          value={selectedCategory}
-        >
-          <option value="">Semua Kategori</option>
-          {kategori.map(category => (
-            <option key={category.id} value={category.id}>{category.nama}</option>
-          ))}
-        </select>
-      </div>
+        {/* Filter Kategori */}
+        <div className='flex flex-col gap-2 w-[250px]'>
+          <Label>Kategori</Label>
+          <select className='border rounded-lg p-2 w-full' onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
+            <option value=''>Semua Kategori</option>
+            {kategori.map(category => <option key={category.id} value={category.id}>{category.nama}</option>)}
+          </select>
+        </div>
 
-        {/* Filter by Location */}
-      <div className='flex flex-col gap-2'>
-          <Label>Berdasarkan lokasi</Label>
-        <select
-          className="border rounded p-2"
-          onChange={(e) => setSelectedLocation(e.target.value)}
-          value={selectedLocation}
-        >
-          <option value="">Semua Lokasi</option>
-          {lokasi.map(location => (
-            <option key={location.id} value={location.id}>{location.nama}</option>
-          ))}
-        </select>
-      </div>
-   </div>
-        {/* Filter by Category */}
+        {/* Filter Lokasi */}
+        <div className='flex flex-col gap-2 w-[250px]'>
+          <Label>Lokasi</Label>
+          <select className='border rounded-lg p-2 w-full' onChange={(e) => setSelectedLocation(e.target.value)} value={selectedLocation}>
+            <option value=''>Semua Lokasi</option>
+            {lokasi.map(location => <option key={location.id} value={location.id}>{location.nama}</option>)}
+          </select>
+        </div>
 
-        {/* <Button variant="default" onClick={handleFilter}>Terapkan Filter</Button> */}
+        {/* Filter Status */}
+        <div className='flex flex-col gap-2 w-[250px]'>
+          <Label>Status</Label>
+          <select className='border rounded-lg p-2 w-full' onChange={(e) => setSelectedStatus(e.target.value)} value={selectedStatus}>
+            <option value=''>Semua Status</option>
+            <option value='proses'>Proses</option>
+            <option value='diterima'>Diterima</option>
+            <option value='selesai'>Selesai</option>
+          </select>
+        </div>
       </div>
 
       {/* Table */}
@@ -164,8 +181,8 @@ const PengaduanPetugas = () => {
             </tr>
           </thead>
           <tbody>
-          {filteredPengaduan.length > 0 ? (
-        filteredPengaduan.map((item, index) => (
+          {currentData.length > 0 ? (
+        currentData.map((item, index) => (
           <tr key={item.id} className="border-b hover:bg-gray-50">
             <td className="px-6 py-4 text-sm text-gray-700">{index + 1}</td>
             <td className="px-6 py-4 text-sm text-gray-700">{item.judul}</td>
@@ -266,6 +283,24 @@ const PengaduanPetugas = () => {
       )}
           </tbody>
         </table>
+        {/* Pagination */}
+      <div className="flex justify-between items-center mt-4">
+        <Button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </Button>
+        <span className="text-gray-700 text-sm">
+          Halaman {currentPage} dari {totalPages}
+        </span>
+        <Button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </Button>
+      </div>
       </div>
     </div>
   );

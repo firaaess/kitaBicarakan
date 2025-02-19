@@ -13,6 +13,7 @@ import { Loader2 } from 'lucide-react'
 import useGetAllLokasi from '@/hooks/useGetAllLokasi'
 import useGetAllKategori from '@/hooks/useGetAllKategori'
 import Footer from './Footer'
+import { Textarea } from './ui/textarea'
 
 const Pengaduan = () => {
   useGetAllLokasi()
@@ -85,7 +86,7 @@ const Pengaduan = () => {
           </div>
           <div className='my-2'>
             <Label>Isi Pengaduan</Label>
-            <Input type='text' value={input.isi_pengaduan} name='isi_pengaduan' onChange={changeEventHandler} placeholder='Masukan isi pengaduan' />
+            <Textarea type='text' value={input.isi_pengaduan} name='isi_pengaduan' onChange={changeEventHandler} placeholder='Masukan isi pengaduan' />
           </div>
           <div className='my-2'>
             <Label>Kategori</Label>

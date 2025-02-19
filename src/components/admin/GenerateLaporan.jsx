@@ -17,12 +17,9 @@ import 'jspdf-autotable';
 const GenerateLaporan = () => {
   useGetAllPengaduan()
   const { pengaduan } = useSelector((store) => store.pengaduan);
-  const { user } = useSelector((store) => store.auth);
   const { kategori } = useSelector((store) => store.kategori);
   const { lokasi } = useSelector((store) => store.lokasi);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
+  const {user} = useSelector((store)=>store.auth)
   const [filteredPengaduan, setFilteredPengaduan] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -51,10 +48,33 @@ const GenerateLaporan = () => {
     handleFilter();
   }, [selectedCategory, selectedLocation, startDate, endDate]);
 
-const generatePDF = () => {
+  const generatePDF = () => {
     const doc = new jsPDF();
-    doc.text('Laporan Pengaduan', 14, 10);
-    
+
+    // Kop Surat
+    doc.setFontSize(14);
+    doc.text('Kita Bicarakan', 105, 15, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text('DINAS PENGADUAN MASYARAKAT', 105, 22, { align: 'center' });
+    doc.line(15, 36, 195, 36); // Garis bawah kop surat
+
+    doc.setFontSize(14);
+    doc.text('Laporan Pengaduan', 14, 45);
+
+    // Menentukan teks periode sesuai filter tanggal
+    let dateRangeText = 'Periode: Semua tanggal';
+    if (startDate && endDate) {
+        dateRangeText = `Periode: Dari ${startDate} sampai ${endDate}`;
+    } else if (startDate) {
+        dateRangeText = `Periode: Dari ${startDate} sampai -`;
+    } else if (endDate) {
+        dateRangeText = `Periode: Dari - sampai ${endDate}`;
+    }
+
+    doc.setFontSize(12);
+    doc.text(dateRangeText, 14, 52);
+
+    // Data Pengaduan Table
     const tableColumn = ['No', 'Judul', 'Isi Pengaduan', 'Kategori', 'Lokasi', 'Status', 'Tanggal'];
     const tableRows = [];
 
@@ -66,7 +86,7 @@ const generatePDF = () => {
             item.kategory.nama,
             item.lokasi.nama,
             item.status,
-            item.created_at.split('T')[0] // Ubah format tanggal di PDF juga
+            item.created_at.split('T')[0]
         ];
         tableRows.push(rowData);
     });
@@ -74,11 +94,20 @@ const generatePDF = () => {
     doc.autoTable({
         head: [tableColumn],
         body: tableRows,
-        startY: 20,
+        startY: 58,
     });
+
+    // Tanda Tangan
+    const pageHeight = doc.internal.pageSize.height;
+    doc.setFontSize(12);
+    doc.text('Mengetahui,', 150, pageHeight - 40);
+    doc.text(user.nama, 150, pageHeight - 10); // Ganti dengan nama admin asli
 
     doc.save('laporan_pengaduan.pdf');
 };
+
+
+
 
   return (
     <div>

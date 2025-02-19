@@ -12,12 +12,23 @@ import { setLokasi } from '@/redux/lokasiSlice'
 
 const LokasiAdmin = () => {
   useGetAllLokasi()
-  const {lokasi} = useSelector((store)=>store.lokasi)
-  // const navigate = useNavigate();
+  const { lokasi = [] } = useSelector((store) => store.lokasi);  // const navigate = useNavigate();
   const dispatch = useDispatch()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newLokasi, setNewLokasi] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const filteredLokasi = lokasi?.filter((item) =>
+    item.nama.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredLokasi.slice(indexOfFirstItem, indexOfLastItem);
+
 
   const handleDeleteLokasi = async (id) => {
     try {
@@ -84,9 +95,18 @@ const LokasiAdmin = () => {
     <div>
     <div className="flex justify-between items-center">
       <h1 className="text-2xl font-bold">Data Lokasi</h1>
-      <Button onClick={() => setIsModalOpen(true)}>
-          <Plus /> Tambah Lokasi
-        </Button>
+      <div className="flex gap-4">
+          <input
+            type="text"
+            placeholder="Cari lokasi..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border px-3 py-2 rounded-md"
+          />
+          <Button onClick={() => setIsModalOpen(true)}>
+            <Plus /> Tambah Lokasi
+          </Button>
+        </div>
     </div>
     {!lokasi ? (
       <p>Loading</p>
@@ -100,8 +120,8 @@ const LokasiAdmin = () => {
           </tr>
         </thead>
         <tbody>
-          {lokasi.length > 0 ? (
-            lokasi.map((item, index) => (
+          {currentItems.length > 0 ? (
+            currentItems.map((item, index) => (
               <tr key={item.id} className="border-b hover:bg-gray-50">
                 <td className="px-6 py-4 text-sm text-gray-700">{index + 1}</td>
                 <td className="px-6 py-4 text-sm text-gray-700">{item.nama}</td>
@@ -131,14 +151,28 @@ const LokasiAdmin = () => {
                 colSpan="6"
                 className="px-6 py-4 text-center text-sm text-gray-500"
               >
-                Tidak ada data kategori
+                Tidak ada data lokasi
               </td>
             </tr>
           )}
         </tbody>
       </table>
     )}
-
+   <div className="flex justify-between items-center mt-4">
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Sebelumnya
+            </Button>
+            <span>Halaman {currentPage}</span>
+            <Button
+              onClick={() => setCurrentPage((prev) => (indexOfLastItem < filteredLokasi.length ? prev + 1 : prev))}
+              disabled={indexOfLastItem >= filteredLokasi.length}
+            >
+              Selanjutnya
+            </Button>
+          </div>
      {/* Modal for Add Kategori */}
      {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
